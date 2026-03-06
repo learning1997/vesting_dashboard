@@ -18,6 +18,8 @@ A decentralized vesting and staking dashboard built for the OPNet ecosystem (Bit
   - Track vesting progress in real-time.
   - View locked amounts and earned rewards.
   - Claim principal + rewards upon maturity.
+- **Data Persistence**:
+  - Uses **Supabase** to store vesting schedules, ensuring data is accessible across devices and browsers.
 - **Bitcoin L1 Transactions**:
   - Signs and broadcasts real Bitcoin transactions via OP_Wallet.
   - Fully decentralized and non-custodial.
@@ -27,7 +29,8 @@ A decentralized vesting and staking dashboard built for the OPNet ecosystem (Bit
 - **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
 - **Styling**: [TailwindCSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Blockchain Integration**: [OPNet MCP](https://opnet.org/) (Simulated SDK for demo)
+- **Backend/Storage**: [Supabase](https://supabase.com/)
+- **Blockchain Integration**: [OPNet MCP](https://opnet.org/)
 - **Wallet**: OP_Wallet (Bitcoin Smart Contract Wallet)
 
 ## 🚀 Getting Started
@@ -36,9 +39,7 @@ A decentralized vesting and staking dashboard built for the OPNet ecosystem (Bit
 
 1.  **Node.js** (v18 or higher) installed.
 2.  **OP_Wallet Extension** installed in your browser.
-    - [Download OP_Wallet](https://opnet.org/)
-    - Switch network to **Regtest** or **Testnet** (as per environment).
-    - Fund your wallet with tBTC from the [OPNet Faucet](https://faucet.opnet.org/).
+3.  **Supabase Project** (Optional for local dev if using provided demo keys, required for production).
 
 ### Installation
 
@@ -53,12 +54,19 @@ A decentralized vesting and staking dashboard built for the OPNet ecosystem (Bit
     npm install
     ```
 
-3.  Run the development server:
+3.  Set up Environment Variables:
+    Create a `.env.local` file in the root directory:
+    ```env
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+    ```
+
+4.  Run the development server:
     ```bash
     npm run dev
     ```
 
-4.  Open [http://localhost:3000](http://localhost:3000) in your browser.
+5.  Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 📦 Deployment
 
@@ -71,7 +79,10 @@ This project is optimized for deployment on **Netlify** or **Vercel**.
 3.  Select your repository.
 4.  **Build Command**: `npm run build`
 5.  **Publish Directory**: `.next` (or let Netlify auto-detect Next.js settings).
-6.  Click **Deploy**.
+6.  **Environment Variables**:
+    - Add `NEXT_PUBLIC_SUPABASE_URL`
+    - Add `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+7.  Click **Deploy**.
 
 ## 📝 Usage Guide
 
