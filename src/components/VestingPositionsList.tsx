@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { VestingSchedule } from "@/contracts/VestingContract";
 import { mcp } from "@/lib/mcp";
 import { formatTokenAmount } from "@/lib/utils";
@@ -16,7 +16,7 @@ export function VestingPositionsList({ refreshTrigger }: { refreshTrigger: numbe
   const [isLoading, setIsLoading] = useState(false);
   const [claimingId, setClaimingId] = useState<string | null>(null);
 
-  const fetchSchedules = async () => {
+  const fetchSchedules = useCallback(async () => {
     if (!address) return;
     setIsLoading(true);
     try {
@@ -27,11 +27,11 @@ export function VestingPositionsList({ refreshTrigger }: { refreshTrigger: numbe
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [address]);
 
   useEffect(() => {
     fetchSchedules();
-  }, [address, refreshTrigger]);
+  }, [fetchSchedules, refreshTrigger]);
 
   const handleClaim = async (scheduleId: string) => {
     setClaimingId(scheduleId);
@@ -58,7 +58,7 @@ export function VestingPositionsList({ refreshTrigger }: { refreshTrigger: numbe
           </div>
           <h3 className="text-lg font-semibold mb-2">No Vesting Positions</h3>
           <p className="text-muted-foreground max-w-sm">
-            You don't have any active vesting positions yet. Create one to start earning APR rewards.
+            You don&apos;t have any active vesting positions yet. Create one to start earning APR rewards.
           </p>
         </CardContent>
       </Card>
