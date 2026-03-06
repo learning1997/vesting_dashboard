@@ -160,7 +160,7 @@ export function VestingPositionsList({ refreshTrigger }: { refreshTrigger: numbe
                       {/* Transaction Hash Link */}
                       {schedule.txHash && (
                         <a 
-                          href={`https://regtest.opnet.org/tx/${schedule.txHash}`} 
+                          href={`https://opscan.org/transactions/${schedule.txHash}?network=op_testnet`} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="text-xs text-primary underline hover:text-primary/80"

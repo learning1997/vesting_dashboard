@@ -307,43 +307,64 @@ class OPNetMCP {
     // Send Transaction
     let transactionHash = "";
     
-    if (typeof window !== "undefined" && window.opnet && window.opnet.request) {
+    if (typeof window !== "undefined" && window.opnet) {
+        // Force try to send transaction
+        // Check for common methods
         try {
            const CONTRACT_ADDRESS = VAULT_WALLET_ADDRESS;
            const satoshis = Math.floor(amount * 100_000_000);
            
            let txid;
+           
+           // Attempt 1: sendBitcoin (Unisat standard)
            // @ts-ignore
-           if (window.opnet.sendBitcoin) {
+           if (typeof window.opnet.sendBitcoin === 'function') {
                // @ts-ignore
                txid = await window.opnet.sendBitcoin(CONTRACT_ADDRESS, satoshis);
-           } else if (window.opnet.request) {
+           } 
+           // Attempt 2: Standard Request
+           else if (window.opnet.request) {
                try {
                   txid = await window.opnet.request({ 
                     method: 'sendBitcoin', 
                     params: [CONTRACT_ADDRESS, satoshis] 
                   });
                } catch (e) {
-                  console.warn("sendBitcoin request failed, trying fallback...");
+                  console.warn("sendBitcoin request failed, trying next method...");
                }
            }
            
+           if (!txid && window.opnet.request) {
+               // Attempt 3: wallet_sendTransaction (Standard BTC)
+               try {
+                   // Some wallets use different params structure
+                   txid = await window.opnet.request({
+                       method: 'wallet_sendTransaction',
+                       params: [{ to: CONTRACT_ADDRESS, value: satoshis }]
+                   });
+               } catch (e) {
+                   console.warn("wallet_sendTransaction failed");
+               }
+           }
+
            if (txid) {
-             console.log("Transaction sent:", txid);
+             console.log("Transaction sent successfully:", txid);
              transactionHash = txid;
              await new Promise((resolve) => setTimeout(resolve, 2000));
            } else {
-             // If we couldn't get a real txid (e.g. simulation), we might throw in production
-             // But for demo continuity if the wallet doesn't support it:
-             transactionHash = "Tx" + Math.random().toString(16).slice(2);
+             console.error("No transaction hash returned from wallet");
+             throw new Error("Transaction failed. Please ensure you have approved the transaction in your wallet.");
            }
-        } catch (e) {
-           console.warn("Failed to send real transaction:", e);
-           throw new Error("Failed to transfer tokens to vault. Please try again.");
+        } catch (e: any) {
+           console.error("Token transfer error:", e);
+           // If user rejected, we should know
+           if (e.message && (e.message.includes("rejected") || e.message.includes("denied"))) {
+               throw new Error("Transaction rejected by user.");
+           }
+           throw new Error(`Failed to transfer tokens: ${e.message || "Unknown wallet error"}`);
         }
     } else {
-        // Fallback for dev without wallet extension
-        transactionHash = "Tx" + Math.random().toString(16).slice(2);
+        throw new Error("OP_WALLET not found. Please install the extension.");
     }
 
     // Save to Supabase
