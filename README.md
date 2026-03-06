@@ -41,6 +41,37 @@ A decentralized vesting and staking dashboard built for the OPNet ecosystem (Bit
 2.  **OP_Wallet Extension** installed in your browser.
 3.  **Supabase Project** (Optional for local dev if using provided demo keys, required for production).
 
+### Database Setup (Supabase)
+
+To enable data persistence, you need to set up a Supabase database.
+
+1.  Create a new project on [Supabase](https://supabase.com/).
+2.  Go to the **SQL Editor** in your Supabase dashboard.
+3.  Run the following SQL query to create the `vesting_schedules` table:
+
+    ```sql
+    CREATE TABLE IF NOT EXISTS vesting_schedules (
+        id TEXT PRIMARY KEY,
+        recipient TEXT NOT NULL,
+        total_amount NUMERIC NOT NULL,
+        start_time BIGINT NOT NULL,
+        cliff_duration BIGINT NOT NULL,
+        vesting_duration BIGINT NOT NULL,
+        amount_claimed NUMERIC DEFAULT 0,
+        apr NUMERIC NOT NULL,
+        reward_amount NUMERIC NOT NULL,
+        tx_hash TEXT,
+        status TEXT DEFAULT 'active',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    );
+
+    -- Index for faster queries by recipient
+    CREATE INDEX IF NOT EXISTS idx_vesting_schedules_recipient ON vesting_schedules(recipient);
+    ```
+
+4.  Copy your **Project URL** and **anon public key** from the API settings.
+5.  Add them to your `.env.local` file (or deployment environment variables).
+
 ### Installation
 
 1.  Clone the repository:
