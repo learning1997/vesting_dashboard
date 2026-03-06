@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Space_Mono, Syne } from "next/font/google";
 import "./globals.css";
 import { WalletProvider } from "@/hooks/useWallet";
 import { Navbar } from "@/components/Navbar";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const spaceMono = Space_Mono({ 
+  subsets: ["latin"], 
+  weight: ["400", "700"],
+  variable: "--font-space-mono" 
+});
+
+const syne = Syne({ 
+  subsets: ["latin"], 
+  variable: "--font-syne" 
+});
 
 export const metadata: Metadata = {
   title: "OPNet Vesting Dashboard",
@@ -18,8 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={cn(inter.variable, "min-h-screen bg-background font-sans antialiased")}>
+    <html lang="en" className="dark">
+      <body className={cn(
+        spaceMono.variable, 
+        syne.variable, 
+        "min-h-screen bg-background text-foreground font-body antialiased"
+      )}>
         <WalletProvider>
           <div className="relative flex min-h-screen flex-col">
             <Navbar />

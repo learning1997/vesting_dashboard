@@ -188,9 +188,15 @@ export function CreateVestingPosition({ onCreated }: { onCreated: () => void }) 
             </div>
             <div className="flex justify-between text-sm border-t border-border pt-3">
               <span className="text-muted-foreground">Vault Address</span>
-              <span className="font-mono text-xs" title={VAULT_WALLET_ADDRESS}>
+              <a 
+                href="https://opscan.org/accounts/opt1pqmtk9n9ep53jjr0cu769lgsvre02h9d9ylv0tsgd72wmsemft54q9lu63l?network=op_testnet"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-xs text-primary underline hover:text-primary/80" 
+                title={VAULT_WALLET_ADDRESS}
+              >
                 {VAULT_WALLET_ADDRESS.substring(0, 8)}...{VAULT_WALLET_ADDRESS.substring(VAULT_WALLET_ADDRESS.length - 8)}
-              </span>
+              </a>
             </div>
           </div>
 
