@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { VestingSchedule } from "@/contracts/VestingContract";
+import { VAULT_WALLET_ADDRESS } from "@/lib/vault";
 
 // Type definitions for OP_WALLET injection
 declare global {
@@ -78,7 +79,9 @@ class OPNetMCP {
       vestingDuration: Number(data.vesting_duration),
       amountClaimed: Number(data.amount_claimed),
       apr: Number(data.apr),
-      rewardAmount: Number(data.reward_amount)
+      rewardAmount: Number(data.reward_amount),
+      txHash: data.tx_hash,
+      status: data.status as any
     };
   }
 
@@ -99,7 +102,9 @@ class OPNetMCP {
       vestingDuration: Number(d.vesting_duration),
       amountClaimed: Number(d.amount_claimed),
       apr: Number(d.apr),
-      rewardAmount: Number(d.reward_amount)
+      rewardAmount: Number(d.reward_amount),
+      txHash: d.tx_hash,
+      status: d.status as any
     }));
   }
 
@@ -208,12 +213,20 @@ class OPNetMCP {
     }
 
     // In real app, we would send a transaction to claim.
-    // Here we update DB.
+    // The Vault Wallet would need to sign and send tokens to the user.
+    // Since this is a client-side app and we don't hold the Vault's private key here,
+    // we simulate the claim by updating the database status.
+    // In a production environment, this would call a backend API that holds the Vault key.
+    
     const newAmountClaimed = schedule.amountClaimed + claimable;
+    const isFullyClaimed = newAmountClaimed >= (schedule.totalAmount + schedule.rewardAmount);
     
     const { error: updateError } = await supabase
       .from('vesting_schedules')
-      .update({ amount_claimed: newAmountClaimed })
+      .update({ 
+        amount_claimed: newAmountClaimed,
+        status: isFullyClaimed ? 'claimed' : 'active'
+      })
       .eq('id', scheduleId);
 
     if (updateError) throw new Error("Failed to update claim status");
@@ -221,7 +234,7 @@ class OPNetMCP {
     return {
       success: true,
       amount: claimable,
-      txHash: "Tx" + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2),
+      txHash: "Tx_Claim_" + Math.random().toString(16).slice(2),
     };
   }
 
@@ -292,9 +305,11 @@ class OPNetMCP {
     }
 
     // Send Transaction
+    let transactionHash = "";
+    
     if (typeof window !== "undefined" && window.opnet && window.opnet.request) {
         try {
-           const CONTRACT_ADDRESS = "bcrt1p5d7rjq7g6rdk2y6n9z5w8p2r4z4n3k6w9z5w8p2r4z4n3k6w9z5w8";
+           const CONTRACT_ADDRESS = VAULT_WALLET_ADDRESS;
            const satoshis = Math.floor(amount * 100_000_000);
            
            let txid;
@@ -315,11 +330,20 @@ class OPNetMCP {
            
            if (txid) {
              console.log("Transaction sent:", txid);
+             transactionHash = txid;
              await new Promise((resolve) => setTimeout(resolve, 2000));
+           } else {
+             // If we couldn't get a real txid (e.g. simulation), we might throw in production
+             // But for demo continuity if the wallet doesn't support it:
+             transactionHash = "Tx" + Math.random().toString(16).slice(2);
            }
         } catch (e) {
            console.warn("Failed to send real transaction:", e);
+           throw new Error("Failed to transfer tokens to vault. Please try again.");
         }
+    } else {
+        // Fallback for dev without wallet extension
+        transactionHash = "Tx" + Math.random().toString(16).slice(2);
     }
 
     // Save to Supabase
@@ -338,7 +362,9 @@ class OPNetMCP {
       vesting_duration: duration,
       amount_claimed: 0,
       apr: apr,
-      reward_amount: rewardAmount
+      reward_amount: rewardAmount,
+      tx_hash: transactionHash,
+      status: 'active'
     });
 
     if (error) {
@@ -348,7 +374,7 @@ class OPNetMCP {
 
     return {
       success: true,
-      txHash: "Tx" + Math.random().toString(16).slice(2),
+      txHash: transactionHash,
     };
   }
 

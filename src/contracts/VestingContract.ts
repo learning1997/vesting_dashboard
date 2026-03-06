@@ -8,6 +8,8 @@ export interface VestingSchedule {
   amountClaimed: number;
   apr: number; // Added APR field
   rewardAmount: number; // Calculated reward amount
+  txHash?: string; // Transaction hash of the lock
+  status?: 'active' | 'completed' | 'claimed';
 }
 
 export class VestingContract {

@@ -157,6 +157,18 @@ export function VestingPositionsList({ refreshTrigger }: { refreshTrigger: numbe
                         </div>
                       </div>
 
+                      {/* Transaction Hash Link */}
+                      {schedule.txHash && (
+                        <a 
+                          href={`https://regtest.opnet.org/tx/${schedule.txHash}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-xs text-primary underline hover:text-primary/80"
+                        >
+                          View Transaction
+                        </a>
+                      )}
+
                       {isClaimed ? (
                         <Button disabled variant="outline" className="gap-2">
                           <CheckCircle2 className="h-4 w-4" />

@@ -21,12 +21,15 @@ const VESTING_OPTIONS: VestingOption[] = [
   { durationLabel: "12 Months", durationSeconds: 31104000, apr: 40 },
 ];
 
+import { VAULT_WALLET_ADDRESS } from "@/lib/vault";
+
 export function CreateVestingPosition({ onCreated }: { onCreated: () => void }) {
   const { isConnected, connect, address } = useWallet();
   const [amount, setAmount] = useState<string>("");
   const [selectedOption, setSelectedOption] = useState<VestingOption>(VESTING_OPTIONS[1]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [balance, setBalance] = useState<number>(0);
 
   // Fetch balance when wallet connects
@@ -59,6 +62,7 @@ export function CreateVestingPosition({ onCreated }: { onCreated: () => void }) 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
 
     if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
       setError("Please enter a valid amount greater than 0");
@@ -77,12 +81,13 @@ export function CreateVestingPosition({ onCreated }: { onCreated: () => void }) 
 
     setIsSubmitting(true);
     try {
-      await mcp.createUserVesting(
+      const result = await mcp.createUserVesting(
         Number(amount),
         selectedOption.durationSeconds,
         selectedOption.apr
       );
       setAmount(""); // Clear input after successful creation
+      setSuccess(`Vesting created! Tx: ${result.txHash.substring(0, 10)}...`);
       onCreated();
       // Refresh balance
       if (address) {
@@ -175,10 +180,16 @@ export function CreateVestingPosition({ onCreated }: { onCreated: () => void }) 
               <span className="text-muted-foreground">Lock Duration</span>
               <span className="font-bold">{selectedOption.durationLabel}</span>
             </div>
-            <div className="flex justify-between text-sm border-t border-border pt-3">
+            <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Estimated Rewards</span>
               <span className="font-bold text-green-500">
                 +{formatTokenAmount(estimatedReward)} tBTC
+              </span>
+            </div>
+            <div className="flex justify-between text-sm border-t border-border pt-3">
+              <span className="text-muted-foreground">Vault Address</span>
+              <span className="font-mono text-xs" title={VAULT_WALLET_ADDRESS}>
+                {VAULT_WALLET_ADDRESS.substring(0, 8)}...{VAULT_WALLET_ADDRESS.substring(VAULT_WALLET_ADDRESS.length - 8)}
               </span>
             </div>
           </div>
@@ -188,13 +199,19 @@ export function CreateVestingPosition({ onCreated }: { onCreated: () => void }) 
               {error}
             </div>
           )}
+          
+          {success && (
+            <div className="text-green-500 text-sm bg-green-500/10 p-3 rounded-md border border-green-500/20">
+              {success}
+            </div>
+          )}
 
           <Button
             type="submit"
             disabled={isSubmitting}
             className="w-full h-12 text-lg font-bold bg-primary text-black hover:bg-primary/90"
           >
-            {isSubmitting ? "Creating Position..." : isConnected ? "Create Position" : "Connect Wallet"}
+            {isSubmitting ? "Locking Tokens..." : isConnected ? "Create Position" : "Connect Wallet"}
           </Button>
         </form>
       </CardContent>
