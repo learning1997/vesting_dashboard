@@ -24,10 +24,10 @@ export default function Dashboard() {
   if (!isConnected) {
     return (
       <div className="container mx-auto py-20 px-4 text-center">
-        <Card className="max-w-md mx-auto border-border">
+        <Card className="max-w-md mx-auto border-border bg-card text-card-foreground">
           <CardHeader>
-            <CardTitle>Connect Wallet</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-foreground">Connect Wallet</CardTitle>
+            <CardDescription className="text-muted-foreground">
               Please connect your OP_Wallet to view your vesting dashboard.
             </CardDescription>
           </CardHeader>
@@ -50,13 +50,13 @@ export default function Dashboard() {
   // For now, we'll keep the wallet balance as the main reliable stat here
   
   return (
-    <div className="container mx-auto py-8 px-4 space-y-8">
+    <div className="container mx-auto py-8 px-4 space-y-8 text-foreground">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">Manage your OPNet token vesting and rewards</p>
+          <h1 className="text-3xl font-bold text-foreground font-heading">Dashboard</h1>
+          <p className="text-muted-foreground font-body">Manage your OPNet token vesting and rewards</p>
         </div>
-        <Button onClick={handleRefresh} variant="outline" size="sm">
+        <Button onClick={handleRefresh} variant="outline" size="sm" className="text-foreground border-border hover:bg-secondary">
           Refresh Data
         </Button>
       </div>
@@ -89,14 +89,14 @@ export default function Dashboard() {
 
 function StatsCard({ title, value, icon, subValue, highlight }: any) {
   return (
-    <Card className={`border-border ${highlight ? "border-primary bg-primary/5" : ""}`}>
+    <Card className={`border-border bg-card text-card-foreground ${highlight ? "border-primary bg-primary/5" : ""}`}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
+        <CardTitle className="text-sm font-medium text-muted-foreground font-body">{title}</CardTitle>
         {icon}
       </CardHeader>
       <CardContent>
-        <div className={`text-2xl font-bold ${highlight ? "text-primary" : ""}`}>{value}</div>
-        <p className="text-xs text-muted-foreground mt-1">{subValue}</p>
+        <div className={`text-2xl font-bold font-mono ${highlight ? "text-primary" : "text-foreground"}`}>{value}</div>
+        <p className="text-xs text-muted-foreground mt-1 font-body">{subValue}</p>
       </CardContent>
     </Card>
   );

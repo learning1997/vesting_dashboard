@@ -34,15 +34,14 @@ export default function Home() {
               transition={{ duration: 0.5 }}
               className="space-y-6"
             >
-              <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight font-heading">
-                Secure Your <span className="text-primary">Bitcoin Yield</span> with <br />
+              <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight font-heading">
+                Smart Vesting <br />
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-amber-600">
-                  Automated Vault System
+                  Automated Vault
                 </span>
               </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-body">
-                Lock your OPNet test tokens and earn APR rewards through flexible vesting periods.
-                The most secure way to grow your holdings on Bitcoin L1.
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-body">
+                Secure your Bitcoin yield on OPNet.
               </p>
             </motion.div>
 
@@ -68,14 +67,6 @@ export default function Home() {
                   >
                     Connect Wallet <Wallet className="ml-2 h-5 w-5" />
                   </Button>
-                  <Button 
-                    size="lg" 
-                    variant="outline"
-                    onClick={connect} // Trigger connect for "Start Vesting" if not connected
-                    className="w-full sm:w-auto text-lg px-8 h-14 border-primary/20 hover:bg-primary/10 rounded-xl"
-                  >
-                    Start Vesting
-                  </Button>
                 </div>
               )}
             </motion.div>
@@ -89,30 +80,6 @@ export default function Home() {
                 {error}
               </motion.div>
             )}
-
-            {/* Abstract Dashboard Visual */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, delay: 0.4 }}
-              className="mt-16 relative w-full max-w-5xl mx-auto aspect-[16/9] bg-gradient-to-br from-secondary to-background border border-border/50 rounded-2xl shadow-2xl shadow-primary/10 overflow-hidden hidden md:block"
-            >
-              <div className="absolute inset-0 bg-grid-white/[0.02]" />
-              <div className="absolute top-0 left-0 right-0 h-12 bg-border/30 border-b border-border/50 flex items-center px-4 gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500/50" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
-                <div className="w-3 h-3 rounded-full bg-green-500/50" />
-              </div>
-              <div className="p-8 pt-20 grid grid-cols-3 gap-6 h-full">
-                <div className="col-span-2 space-y-6">
-                  <div className="h-32 rounded-xl bg-primary/5 border border-primary/10 animate-pulse" />
-                  <div className="h-48 rounded-xl bg-secondary/50 border border-border/50" />
-                </div>
-                <div className="col-span-1 space-y-6">
-                  <div className="h-full rounded-xl bg-secondary/50 border border-border/50" />
-                </div>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>

@@ -21,12 +21,14 @@ export function Navbar() {
           </Link>
           
           <div className="hidden md:flex gap-4">
-            <Link 
-              href="/dashboard" 
-              className={`text-sm font-medium transition-colors hover:text-primary ${pathname === '/dashboard' ? 'text-primary' : 'text-muted-foreground'}`}
-            >
-              Dashboard
-            </Link>
+            {isConnected && (
+              <Link 
+                href="/dashboard" 
+                className={`text-sm font-medium transition-colors hover:text-primary ${pathname === '/dashboard' ? 'text-primary' : 'text-muted-foreground'}`}
+              >
+                Dashboard
+              </Link>
+            )}
           </div>
         </div>
 
