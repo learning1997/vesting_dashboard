@@ -1,0 +1,52 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-616e068a201ad621.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-1dc7a28b320d3501.js",
+      "static/chunks/main-app-46dfa15ef902b689.js",
+      "static/chunks/app/_not-found/page-b0486616258356d1.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-616e068a201ad621.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-1dc7a28b320d3501.js",
+      "static/chunks/main-app-46dfa15ef902b689.js",
+      "static/css/91e7eea2623d7903.css",
+      "static/chunks/502-c456472382ccea0d.js",
+      "static/chunks/138-d5556abbccfc5335.js",
+      "static/chunks/43-39886723654c0fe6.js",
+      "static/chunks/app/layout-60f8bac38232795e.js"
+    ],
+    "/dashboard/page": [
+      "static/chunks/webpack-616e068a201ad621.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-1dc7a28b320d3501.js",
+      "static/chunks/main-app-46dfa15ef902b689.js",
+      "static/chunks/502-c456472382ccea0d.js",
+      "static/chunks/43-39886723654c0fe6.js",
+      "static/chunks/app/dashboard/page-10f95847fa1a63e4.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-616e068a201ad621.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-1dc7a28b320d3501.js",
+      "static/chunks/main-app-46dfa15ef902b689.js",
+      "static/chunks/502-c456472382ccea0d.js",
+      "static/chunks/138-d5556abbccfc5335.js",
+      "static/chunks/448-6d47f88d629af067.js",
+      "static/chunks/43-39886723654c0fe6.js",
+      "static/chunks/app/page-80966272fd5ae999.js"
+    ],
+    "/vesting/[address]/page": [
+      "static/chunks/webpack-616e068a201ad621.js",
+      "static/chunks/fd9d1056-4a917af64af6b262.js",
+      "static/chunks/23-1dc7a28b320d3501.js",
+      "static/chunks/main-app-46dfa15ef902b689.js",
+      "static/chunks/502-c456472382ccea0d.js",
+      "static/chunks/138-d5556abbccfc5335.js",
+      "static/chunks/420-589f768da359aa9f.js",
+      "static/chunks/app/vesting/[address]/page-9dd492363be9ab31.js"
+    ]
+  }
+}
