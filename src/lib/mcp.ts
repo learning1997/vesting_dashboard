@@ -308,42 +308,63 @@ class OPNetMCP {
     let transactionHash = "";
     
     if (typeof window !== "undefined" && window.opnet) {
-        // Force try to send transaction
-        // Check for common methods
         try {
            const CONTRACT_ADDRESS = VAULT_WALLET_ADDRESS;
+           if (!CONTRACT_ADDRESS) {
+             throw new Error("Vault address is missing in configuration");
+           }
+
            const satoshis = Math.floor(amount * 100_000_000);
+           console.log(`Sending ${satoshis} sats to ${CONTRACT_ADDRESS}`);
            
            let txid;
            
-           // Attempt 1: sendBitcoin (Unisat standard)
+           // Attempt 1: sendBitcoin (Direct method - Unisat/OP_WALLET standard)
            // @ts-ignore
            if (typeof window.opnet.sendBitcoin === 'function') {
-               // @ts-ignore
-               txid = await window.opnet.sendBitcoin(CONTRACT_ADDRESS, satoshis);
+               try {
+                 // @ts-ignore
+                 txid = await window.opnet.sendBitcoin(CONTRACT_ADDRESS, satoshis);
+               } catch (err) {
+                 console.warn("Direct sendBitcoin failed, trying next...", err);
+               }
            } 
-           // Attempt 2: Standard Request
-           else if (window.opnet.request) {
+           
+           // Attempt 2: Request method with Array params
+           if (!txid && window.opnet.request) {
                try {
                   txid = await window.opnet.request({ 
                     method: 'sendBitcoin', 
                     params: [CONTRACT_ADDRESS, satoshis] 
                   });
                } catch (e) {
-                  console.warn("sendBitcoin request failed, trying next method...");
+                  console.warn("sendBitcoin (array) failed, trying next...", e);
+               }
+           }
+
+           // Attempt 3: Request method with Object params (Some versions)
+           if (!txid && window.opnet.request) {
+               try {
+                  // @ts-ignore
+                  txid = await window.opnet.request({ 
+                    method: 'sendBitcoin', 
+                    // @ts-ignore
+                    params: { to: CONTRACT_ADDRESS, amount: satoshis } 
+                  });
+               } catch (e) {
+                  console.warn("sendBitcoin (object) failed, trying next...", e);
                }
            }
            
+           // Attempt 4: wallet_sendTransaction (Standard BTC/Web3)
            if (!txid && window.opnet.request) {
-               // Attempt 3: wallet_sendTransaction (Standard BTC)
                try {
-                   // Some wallets use different params structure
                    txid = await window.opnet.request({
                        method: 'wallet_sendTransaction',
                        params: [{ to: CONTRACT_ADDRESS, value: satoshis }]
                    });
                } catch (e) {
-                   console.warn("wallet_sendTransaction failed");
+                   console.warn("wallet_sendTransaction failed", e);
                }
            }
 
@@ -352,8 +373,8 @@ class OPNetMCP {
              transactionHash = txid;
              await new Promise((resolve) => setTimeout(resolve, 2000));
            } else {
-             console.error("No transaction hash returned from wallet");
-             throw new Error("Transaction failed. Please ensure you have approved the transaction in your wallet.");
+             // If we reach here, all methods failed or returned null/undefined without throwing
+             throw new Error("Failed to initiate transaction. Please check your wallet connection.");
            }
         } catch (e: any) {
            console.error("Token transfer error:", e);
